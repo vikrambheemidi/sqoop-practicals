@@ -1,0 +1,55 @@
+sqoop export command
+================================================
+nano employee.txt
+1201,male,45000
+1202,female,50000
+1203,female,23000
+1204,male,20000
+1205,male,10000
+
+hadoop fs -put employee.txt /user/hadoop
+In MySQl
+create database sqoopexample;
+use sqoopexample;
+CREATE TABLE sqoop(id int(4),gender varchar(23),salary float(5));
+   
+Syntax:
+sqoop export --connect jdbc:mysql://localhost/database_name --username root --password 'root' --table table_name --export-dir /user/hadoop/employee.txt
+
+
+sqoop export --connect jdbc:mysql://localhost/sqoopexample --username root --password 'root' --table sqoop --export-dir /user/hadoop/ar
+
+====================================================================================================
+
+Import all tables from mysql into hdfs
+----------------------------------------------------
+
+sqoop import-all-tables --connect jdbc:mysql://localhost/db1 --username root --password 'root' -m 1;
+
+(if target dir not specified the files will get copied in a folder by
+the name hduser)
+
+
+sqoop import --connect jdbc:mysql://localhost/sqoopexample --username  root --password 'root' --table sqoop --hive-import --hive-table db1.sd1 -m 1;
+sqoop import --connect jdbc:mysql://localhost/sqoopexample --username root --password 'root' --table sqoop1 --target-dir /user/hadoop/student_master;
+=============================================================================
+LIST DATABASES
+-------------
+[hduser@ubuntu ~]$ sqoop list-databases --connect jdbc:mysql://localhost --username root --password 'root';
+
+LIST TABLES in a database
+--------------------------
+[hduser@ubuntu ~]$ sqoop list-tables --connect jdbc:mysql://localhost/college --username root --password 'root';
+
+WITH WHERE CLAUSE
+
+sqoop import --connect jdbc:mysql://localhost/sqoopexample --username root --password 'root' --table sqoop1 --where 'id=1' --target-dir /user/college/query -m 1;
+
+WITH QUERY
+
+sqoop import --connect jdbc:mysql://localhost/sqoopexample --username root --password 'root' --query 'select * from student_master where $CONDITIONS
+and student_id=2' --target-dir /user/college/query1 -m 1;
+
+WITH JOINS in form of Query
+
+sqoop import --connect jdbc:mysql://localhost/college --username root --password '' --query 'select a.student_id, a.name, a.address,b.result from student_master a, fy b where $CONDITIONS and a.student_id=b.student_id' --target-dir /user/college/query3 -m 1;
